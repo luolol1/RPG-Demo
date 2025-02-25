@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    [Header("Attack details")]
+    public Vector2[] AttackMovement;
     [Header("Move info")]
     public float Movespeed;
     [Header("Jump info")]
@@ -41,6 +43,7 @@ public class Player : MonoBehaviour
     public PlayerDashState dashState { get; private set; }//冲刺
     public PlayerWallSlideState wallSlide { get; private set; }
     public PlayerWallJumpState wallJump { get; private set; }
+    public PlayerPrimaryAttack primaryAttack { get; private set; }
 
     #endregion
     private void Awake()
@@ -55,6 +58,7 @@ public class Player : MonoBehaviour
         dashState = new PlayerDashState(this, stateMachine, "Dash");
         wallSlide = new PlayerWallSlideState(this, stateMachine, "WallSlide");
         wallJump = new PlayerWallJumpState(this, stateMachine, "Jump");
+        primaryAttack = new PlayerPrimaryAttack(this, stateMachine, "Attack");
     }
     private void Start()
     {
@@ -66,7 +70,7 @@ public class Player : MonoBehaviour
         CheckForDashInput();//希望在任何时刻都能冲刺闪避
 
     }
-
+    public void AnimationTrigger() => stateMachine.CurrentState.AnimationFinishTrigger();
     private void CheckForDashInput()
     {
         DashTime-=Time.deltaTime;
@@ -86,6 +90,7 @@ public class Player : MonoBehaviour
         rb.velocity=new Vector2(_xVelocity, _yVelocity);
         FlipController(_xVelocity);
     }
+    #region Collision
     public bool IsGroundDetected() => Physics2D.Raycast(GroundCheck.position, Vector2.down, GroundCheckDistance, whatIsGround);//地面检测
 
     public bool IsWallDetected() => Physics2D.Raycast(WallCheck.position, Vector2.right * facingDirection, WallCheckDistance, whatIsGround);
@@ -94,6 +99,8 @@ public class Player : MonoBehaviour
         Gizmos.DrawLine(GroundCheck.position, new Vector3(GroundCheck.position.x, GroundCheck.position.y - GroundCheckDistance));
         Gizmos.DrawLine(WallCheck.position,new Vector3(WallCheck.position.x+WallCheckDistance,WallCheck.position.y));
     }
+    #endregion
+    #region Flip
     public void Flip()
     {
         facingDirection = facingDirection * -1;
@@ -107,4 +114,5 @@ public class Player : MonoBehaviour
         else if(_x < 0 && facingRight) 
             Flip();
     }
+    #endregion
 }
