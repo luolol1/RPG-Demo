@@ -14,7 +14,7 @@ public class PlayerPrimaryAttack : PlayerState
     public override void Enter()
     {
         base.Enter();
-        if (ComboCounter > 2 || Time.time - LastAttackTime >= ComboWindow)
+        if (ComboCounter > 2 || Time.time - LastAttackTime >= ComboWindow)//连击数大于2或者超过连击间隔时间则重置连击数
             ComboCounter = 0;
         player.anim.SetInteger("ComboCounter", ComboCounter);
         player.SetVelocity(player.AttackMovement[ComboCounter].x * player.facingDirection, player.AttackMovement[ComboCounter].y);
