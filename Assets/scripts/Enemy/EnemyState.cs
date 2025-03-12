@@ -32,5 +32,9 @@ public class EnemyState
     {
         enemyBase.anim.SetBool(animBoolName, false);
     }
+    public void AnimationFinishTrigger()
+    {
+        TriggerCalled = true;
+    }
 
 }

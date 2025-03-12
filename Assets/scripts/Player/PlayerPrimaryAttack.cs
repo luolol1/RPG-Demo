@@ -17,7 +17,11 @@ public class PlayerPrimaryAttack : PlayerState
         if (ComboCounter > 2 || Time.time - LastAttackTime >= ComboWindow)//连击数大于2或者超过连击间隔时间则重置连击数
             ComboCounter = 0;
         player.anim.SetInteger("ComboCounter", ComboCounter);
-        player.SetVelocity(player.AttackMovement[ComboCounter].x * player.facingDirection, player.AttackMovement[ComboCounter].y);
+        float AttackDir = player.facingDirection;
+        xInput = Input.GetAxisRaw("Horizontal");
+        if (xInput != 0)
+            AttackDir = xInput;
+        player.SetVelocity(player.AttackMovement[ComboCounter].x * AttackDir, player.AttackMovement[ComboCounter].y);
         stateTimer = 0.1f;
     }
 
@@ -26,6 +30,7 @@ public class PlayerPrimaryAttack : PlayerState
         base.Exit();
         LastAttackTime=Time.time;
         ComboCounter++;
+        player.StartCoroutine("BusyFor");
     }
 
     public override void Update()

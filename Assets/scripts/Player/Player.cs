@@ -5,12 +5,17 @@ using UnityEngine;
 
 public class Player : Entity
 {
+    public bool isBusy { get;private set; }
     [Header("Attack details")]
     public Vector2[] AttackMovement;
+    public float CounterAttackDuration;
+
     [Header("Move info")]
     public float Movespeed;
+
     [Header("Jump info")]
     public float Jumpforce;
+
     [Header("Dash info")]
     [SerializeField] private float DashCoolDown;//冲刺的cd
     private float DashTime;//还差多少时间才能使用冲刺技能（小于0即可使用）
@@ -32,6 +37,7 @@ public class Player : Entity
     public PlayerWallSlideState wallSlide { get; private set; }
     public PlayerWallJumpState wallJump { get; private set; }
     public PlayerPrimaryAttack primaryAttack { get; private set; }
+    public PlayerCounterAttack counterAttack { get; private set; }
 
     #endregion
     protected override void Awake()
@@ -48,6 +54,7 @@ public class Player : Entity
         wallSlide = new PlayerWallSlideState(this, stateMachine, "WallSlide");
         wallJump = new PlayerWallJumpState(this, stateMachine, "Jump");
         primaryAttack = new PlayerPrimaryAttack(this, stateMachine, "Attack");
+        counterAttack = new PlayerCounterAttack(this, stateMachine, "CounterAttack");
     }
     protected override void Start()
     {
@@ -76,7 +83,12 @@ public class Player : Entity
             stateMachine.ChangeState(dashState);
         }
     }
-    
+    public IEnumerator BusyFor()
+    {
+        isBusy = true;
+        yield return new WaitForSeconds(0.15f);
+        isBusy = false;
+    }
     
     
 }
